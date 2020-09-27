@@ -22,4 +22,4 @@ def upload():
 
     return f'Inserted {len(request.json["logs"])} record logs'
 
-app.run(host='0.0.0.0', port=3000)
+app.run(ssl_context='adhoc', host='0.0.0.0', port=3000)
