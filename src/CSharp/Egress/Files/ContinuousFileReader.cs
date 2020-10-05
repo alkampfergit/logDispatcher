@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Egress.Files
 {
-    public class ContinuousFileReader
+    public class ContinuousFileReader : IContentPoller
     {
         private readonly string _monitoredFileName;
         private FileSystemWatcher _fileSystemWatcher;
@@ -16,11 +16,11 @@ namespace Egress.Files
             ReadCheckpoint();
         }
 
-        public event EventHandler<ContentChangedEventArgs> ContentChanged;
+        public event EventHandler<LinesPolledEventArgs> ContentChanged;
 
         protected void OnContentChanged(string[] newLines)
         {
-            ContentChanged?.Invoke(this, new ContentChangedEventArgs(newLines));
+            ContentChanged?.Invoke(this, new LinesPolledEventArgs(newLines));
         }
 
         private Int32 _readGate = 0;

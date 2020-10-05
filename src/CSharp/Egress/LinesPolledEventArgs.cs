@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Egress.Files
+namespace Egress
 {
-    public class ContentChangedEventArgs : EventArgs
+    public class LinesPolledEventArgs : EventArgs
     {
-        public ContentChangedEventArgs(string[] newLines)
+        public LinesPolledEventArgs(string[] newLines)
         {
             NewLines = newLines;
         }

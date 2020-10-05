@@ -162,7 +162,7 @@ namespace Egress.Tests.Files
             return sut;
         }
 
-        private void Sut_ContentChanged(object sender, ContentChangedEventArgs e)
+        private void Sut_ContentChanged(object sender, LinesPolledEventArgs e)
         {
             _readLines.AddRange(e.NewLines);
         }
