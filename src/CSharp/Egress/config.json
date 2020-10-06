@@ -1,0 +1,22 @@
+{
+  "DestinationCollection": "test-collection",
+  "SourceName": "ThisIsACowrieTest",
+  "Poller": {
+    "Name": "Egress.Files.ContinuousFileReader, Egress",
+    "Configuration": {
+      "fileToMonitor": "X:\\Docker\\Cowrie\\Logs\\cowrie.json"
+    }
+  },
+  "Parser": {
+    "Name": "Egress.Parsers.JsonParser, Egress",
+    "Configuration": {
+
+    }
+  },
+  "Sender": {
+    "Name": "Egress.Senders.PythonReceiverSender, Egress",
+    "Configuration": {
+      "destinationAddress" :  "http://localhost:3000/upload"
+    }
+  }
+}

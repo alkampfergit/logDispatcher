@@ -14,7 +14,7 @@ db = client.logDispatcher
 def upload():
 
     if not request.json or not 'destination' in request.json or not 'logs' in request.json:
-        abort(400)
+      abort(400)
 
     coll = db[request.json["destination"]]
     for log in request.json['logs']:  
@@ -22,4 +22,5 @@ def upload():
 
     return f'Inserted {len(request.json["logs"])} record logs'
 
-app.run(ssl_context='adhoc', host='0.0.0.0', port=3000)
+# app.run(ssl_context='adhoc', host='0.0.0.0', port=3000)
+app.run(host='0.0.0.0', port=3000)

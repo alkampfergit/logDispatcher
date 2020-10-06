@@ -14,6 +14,6 @@ namespace Egress
         /// </summary>
         /// <param name="log"></param>
         /// <returns></returns>
-        Task SendAsync(string log);
+        Task SendAsync(string destination, string log);
     }
 }
