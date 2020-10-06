@@ -16,7 +16,7 @@
   "Sender": {
     "Name": "Egress.Senders.PythonReceiverSender, Egress",
     "Configuration": {
-      "destinationAddress" :  "http://localhost:3000/upload"
+      "destinationAddress" :  "http://localhost:5000/upload"
     }
   }
 }

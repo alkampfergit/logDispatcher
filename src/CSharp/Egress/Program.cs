@@ -1,6 +1,8 @@
 ﻿using Egress.Configuration;
 using Egress.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Egress
 {
@@ -28,11 +30,12 @@ namespace Egress
 
         private static void ContentChanged(object? _, LinesPolledEventArgs e)
         {
+            List<String> logs = new List<string>();
             foreach (var line in e.NewLines)
             {
-                var logJson = _parser.Parse(MainConfiguration.Instance.SourceName, line);
-                _sender.SendAsync(MainConfiguration.Instance.DestinationCollection, logJson).Wait();
+                logs.Add(_parser.Parse(MainConfiguration.Instance.SourceName, line));
             }
+            _sender.SendManyAsync(MainConfiguration.Instance.DestinationCollection, logs).Wait();
         }
     }
 }
