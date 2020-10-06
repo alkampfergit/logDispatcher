@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Egress.Files
 {
@@ -75,24 +76,24 @@ namespace Egress.Files
             }
 
             _lastReadPosition = fr.Position;
-            WriteCheckpoint();
             if (linesBuffer?.Count > 0)
             {
                 OnContentChanged(linesBuffer.ToArray());
+                WriteCheckpoint();
             }
         }
 
         public void StartMonitoring()
         {
-            //read immediately, then start monitor the file.
-            Read();
-
+            // start monitor the file, then read immediately on another thread
             _fileSystemWatcher = new FileSystemWatcher();
             _fileSystemWatcher.Path = Path.GetDirectoryName(_monitoredFileName);
             _fileSystemWatcher.Filter = Path.GetFileName(_monitoredFileName);
             _fileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite;
             _fileSystemWatcher.Changed += FileChanged;
             _fileSystemWatcher.EnableRaisingEvents = true;
+
+            Task.Factory.StartNew(() => Read());
         }
 
         private void FileChanged(object sender, FileSystemEventArgs e)

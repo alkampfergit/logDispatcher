@@ -5,7 +5,7 @@ from flask import request
 from pymongo import MongoClient
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 
 client = MongoClient("mongodb://admin:123456##@localhost") 
 db = client.logDispatcher
@@ -18,9 +18,14 @@ def upload():
 
     coll = db[request.json["destination"]]
     for log in request.json['logs']:  
-        coll.insert(log)
+        coll.insert_one(log)
 
     return f'Inserted {len(request.json["logs"])} record logs'
 
-# app.run(ssl_context='adhoc', host='0.0.0.0', port=3000)
-app.run(host='0.0.0.0', port=3000)
+# to run set in powershell variable with the application
+# $env:FLASK_APP = "ingress.py"
+# flask run
+
+# or directly host here
+# app.run(ssl_context='adhoc', host='0.0.0.0', port=5000)
+app.run(host='0.0.0.0', port=5000)
