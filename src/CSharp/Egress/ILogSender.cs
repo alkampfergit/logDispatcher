@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Egress
 {
@@ -15,5 +16,12 @@ namespace Egress
         /// <param name="log"></param>
         /// <returns></returns>
         Task SendAsync(string destination, string log);
+
+        /// <summary>
+        /// Send a series of logs to the destination, all logs are simple serialized json string.
+        /// </summary>
+        /// <param name="logs"></param>
+        /// <returns></returns>
+        Task SendManyAsync(string destination, IEnumerable<string> logs);
     }
 }
