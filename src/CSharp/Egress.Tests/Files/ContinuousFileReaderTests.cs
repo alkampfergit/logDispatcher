@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Egress.Tests.Files
 {
@@ -65,12 +66,12 @@ namespace Egress.Tests.Files
         }
 
         [Test]
-        public void Can_monitor_file()
+        public async Task Can_monitor_file()
         {
             File.WriteAllText(_testFileName, "Hello world\n");
             ContinuousFileReader sut = CreateSut();
 
-            sut.StartMonitoring();
+            await sut.StartMonitoringAsync().ConfigureAwait(false);
 
             //we expect first version of file to be generated
             Assert.That(_readLines, Is.EquivalentTo(new[] { "Hello world" }));
@@ -86,12 +87,51 @@ namespace Egress.Tests.Files
         }
 
         [Test]
-        public void Monitoring_file_can_be_stopped()
+        public async Task When_you_monitor_and_file_is_replaced()
         {
             File.WriteAllText(_testFileName, "Hello world\n");
             ContinuousFileReader sut = CreateSut();
 
-            sut.StartMonitoring();
+            await sut.StartMonitoringAsync().ConfigureAwait(false);
+
+            //we expect first version of file to be generated
+            Assert.That(_readLines, Is.EquivalentTo(new[] { "Hello world" }));
+
+            //now we replace the entire file
+            _readLines.Clear();
+            File.WriteAllText(_testFileName, "Oh another line");
+
+            //watcher is not instantaneous, we need to wait for a small amount of time for the data to be there.
+            WaitForNumberOfRowToBeRead(1);
+
+            Assert.That(_readLines, Is.EquivalentTo(new[] { "Oh another line" }), "we expect the reader to understand taht the file is changed completely");
+        }
+
+        [Test]
+        public async Task When_you_monitor_and_file_is_replaced_with_multiple_lines()
+        {
+            File.WriteAllText(_testFileName, "Hello world\nAnother Big Line with content");
+            ContinuousFileReader sut = CreateSut();
+
+            await sut.StartMonitoringAsync().ConfigureAwait(false);
+
+            //now we replace the entire file
+            _readLines.Clear();
+            File.WriteAllText(_testFileName, "Oh another line");
+
+            //watcher is not instantaneous, we need to wait for a small amount of time for the data to be there.
+            WaitForNumberOfRowToBeRead(1);
+
+            Assert.That(_readLines, Is.EquivalentTo(new[] { "Oh another line" }), "we expect the reader to understand taht the file is changed completely");
+        }
+
+        [Test]
+        public async Task Monitoring_file_can_be_stopped()
+        {
+            File.WriteAllText(_testFileName, "Hello world\n");
+            ContinuousFileReader sut = CreateSut();
+
+            await sut.StartMonitoringAsync().ConfigureAwait(false);
 
             //we expect first version of file to be generated
             Assert.That(_readLines, Is.EquivalentTo(new[] { "Hello world" }));

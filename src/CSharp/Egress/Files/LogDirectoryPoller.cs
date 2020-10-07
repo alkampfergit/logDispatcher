@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Egress.Files
 {
@@ -16,6 +15,11 @@ namespace Egress.Files
         public event EventHandler<LinesPolledEventArgs> ContentChanged;
 
         public void StartMonitoring()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task StartMonitoringAsync()
         {
             throw new NotImplementedException();
         }

@@ -10,15 +10,12 @@ namespace Egress.Files
             var files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.checkpoint");
             foreach (var file in files)
             {
-                var content = File.ReadAllText(file);
-                var splitContent = content.Split('|');
-                if (splitContent.Length > 1) 
+                var checkpoint = ContinuousFileReaderCheckpoint.CreateFromCheckpointFile(file);
+
+                var fileInfo = new FileInfo(checkpoint.FileName);
+                if (!fileInfo.Exists)
                 {
-                    var fileInfo = new FileInfo(splitContent[1]);
-                    if (!fileInfo.Exists)
-                    {
-                        File.Delete(file);
-                    }
+                    File.Delete(file);
                 }
             }
         }
