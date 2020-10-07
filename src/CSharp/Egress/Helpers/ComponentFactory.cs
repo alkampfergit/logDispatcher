@@ -20,20 +20,35 @@ namespace Egress.Helpers
             {
                 List<Object> parameterList = new List<object>();
                 var constructorParameters = constructor.GetParameters();
+                Boolean constructorIsSuitable = true;
                 foreach (var argument in constructorParameters)
                 {
-                    if (!caseInsensitiveParameters.ContainsKey(argument.Name))
+                    if (caseInsensitiveParameters.ContainsKey(argument.Name))
                     {
-                        //parameter is missing
-                        continue;
+                        parameterList.Add(caseInsensitiveParameters[argument.Name]);
                     }
-                    parameterList.Add(caseInsensitiveParameters[argument.Name]);
+                    else 
+                    {
+                        if (argument.DefaultValue != null)
+                        {
+                            parameterList.Add(argument.DefaultValue);
+                        }
+                        else
+                        {
+                            //parameter is missing nor has a default value, this constructor is not suitable.
+                            constructorIsSuitable = false;
+                            break;
+                        }
+                    }
                 }
 
-                return constructor.Invoke(parameterList.ToArray());
+                if (constructorIsSuitable)
+                {
+                    return constructor.Invoke(parameterList.ToArray());
+                }
             }
 
-            throw new ArgumentException(nameof(parameters), "No suitable constructor accepts those parameters");
+            throw new ArgumentException("No suitable constructor accepts those parameters", nameof(parameters));
         }
     }
 }

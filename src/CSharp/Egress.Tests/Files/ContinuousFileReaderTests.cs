@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -47,6 +49,33 @@ namespace Egress.Tests.Files
             sut.Read();
             //we expect something to be generated
             Assert.That(_readLines, Is.EquivalentTo(new[] { "Hello world" }));
+        }
+
+        [Test]
+        public void Read_chunk_not_greater_than_max_value()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 100; i++)
+            {
+                sb.Append($"Hello {i}\n");
+            }
+            File.WriteAllText(_testFileName, sb.ToString());
+            ContinuousFileReader sut = CreateSut();
+
+            //remove old event handler
+            sut.ContentChanged -= this.Sut_ContentChanged;
+
+            Int32 callCount = 0;
+            sut.ContentChanged += (sender, args) =>
+            {
+                callCount++;
+                Assert.That(args.NewLines.Count, Is.EqualTo(50));
+            };
+
+            sut.Read();
+
+            //we expect something to be generated
+            Assert.That(callCount, Is.EqualTo(2));
         }
 
         [Test]
